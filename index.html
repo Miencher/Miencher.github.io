@@ -594,6 +594,22 @@
     75% { text-shadow: -2px 0 var(--neon-purple), 2px 0 var(--neon-pink); transform: translateX(1px); }
     100% { text-shadow: 2px 0 var(--neon-pink), -2px 0 var(--neon-cyan); transform: translateX(0); }
   }
+
+  /* Audio unlock overlay */
+  #audio-guard {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(5,5,16,0.96);
+    color: #fff;
+    z-index: 9999;
+    font-family: 'Orbitron', monospace;
+    font-size: 1.1rem;
+    text-align: center;
+    cursor: pointer;
+  }
 </style>
 </head>
 <body>
@@ -683,6 +699,9 @@
 
   <div class="hint">Q W E R — A S D F — Z X C V &nbsp;|&nbsp; SPACE = play/stop &nbsp;|&nbsp; ESC = clear &nbsp;|&nbsp; 🎲 = random beat</div>
 </div>
+
+<!-- Audio unlock guard (will be removed after first interaction) -->
+<div id="audio-guard">Нажмите или коснитесь экрана, чтобы включить звук</div>
 
 <script>
 // ─── Audio Engine ──────────────────────────────────────────────────────────────
@@ -966,6 +985,17 @@ document.querySelectorAll('.pad').forEach(p => {
     triggerPad(p, e);
   });
 });
+
+// Audio unlock overlay logic
+const audioGuard = document.getElementById('audio-guard');
+if (audioGuard) {
+  const unlock = async (e) => {
+    e.preventDefault();
+    try { await AC.resume(); } catch (err) { /* ignore */ }
+    audioGuard.remove();
+  };
+  audioGuard.addEventListener('pointerdown', unlock);
+}
 
 // Keyboard
 const keyMap = { Q:'kick', W:'snare', E:'hihat', R:'open-hat', A:'clap', S:'tom', D:'bass', F:'fx', Z:'rimshot', X:'cowbell', C:'shaker', V:'synth' };
