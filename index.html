@@ -959,6 +959,14 @@ function triggerPad(el, event) {
   }
 }
 
+// Attach pointer handlers to pads so clicks/touches trigger sound
+document.querySelectorAll('.pad').forEach(p => {
+  p.addEventListener('pointerdown', e => {
+    e.preventDefault();
+    triggerPad(p, e);
+  });
+});
+
 // Keyboard
 const keyMap = { Q:'kick', W:'snare', E:'hihat', R:'open-hat', A:'clap', S:'tom', D:'bass', F:'fx', Z:'rimshot', X:'cowbell', C:'shaker', V:'synth' };
 document.addEventListener('keydown', e => {
